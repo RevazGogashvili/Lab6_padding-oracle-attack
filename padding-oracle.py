@@ -111,4 +111,21 @@ def unpad_and_decode(plaintext: bytes) -> str:
         return str(unpadded_data)
 
 
+if __name__ == "__main__":
+    try:
+        ciphertext = unhexlify(CIPHERTEXT_HEX)
+        print(f"[*] Ciphertext length: {len(ciphertext)} bytes")
+        print(f"[*] IV: {ciphertext[:BLOCK_SIZE].hex()}")
 
+        recovered = padding_oracle_attack(ciphertext)
+
+        print("\n[+] Decryption complete!")
+        print(f" Recovered plaintext (raw bytes): {recovered}")
+        print(f" Hex: {recovered.hex()}")
+
+        decoded = unpad_and_decode(recovered)
+        print("\n Final plaintext:")
+        print(decoded)
+
+    except Exception as e:
+        print(f"\n Error occurred: {e}")
