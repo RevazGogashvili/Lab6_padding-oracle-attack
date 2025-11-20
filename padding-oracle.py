@@ -83,3 +83,20 @@ def decrypt_block(prev_block: bytes, target_block: bytes) -> bytes:
     print()
     return bytes(decrypted_block)
 
+def padding_oracle_attack(ciphertext: bytes) -> bytes:
+    blocks = split_blocks(ciphertext)
+    iv = blocks[0]
+    ciphertext_blocks = blocks[1:]
+
+    recovered_plaintext = b""
+
+    prev_block = iv
+
+    for i, target_block in enumerate(ciphertext_blocks):
+        print(f"\n[+] Attacking Block {i+1}/{len(ciphertext_blocks)}")
+        decrypted_block = decrypt_block(prev_block, target_block)
+        recovered_plaintext += decrypted_block
+
+        prev_block = target_block
+    return recovered_plaintext
+
