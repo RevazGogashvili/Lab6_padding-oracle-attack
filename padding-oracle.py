@@ -32,3 +32,9 @@ def padding_oracle(ciphertext: bytes) -> bool:
         return True
     except (ValueError, TypeError):
         return False
+
+def split_blocks(data: bytes, block_size: int = BLOCK_SIZE) -> list[bytes]:
+    """Split data into blocks of the specified size."""
+    if len(data) % block_size != 0:
+        raise ValueError(f"Data length {len(data)} is not a multiple of block size {block_size}")
+    return [data[i:i + block_size] for i in range(0, len(data), block_size)]
