@@ -100,3 +100,15 @@ def padding_oracle_attack(ciphertext: bytes) -> bytes:
         prev_block = target_block
     return recovered_plaintext
 
+def unpad_and_decode(plaintext: bytes) -> str:
+    try:
+        unpadder = padding.PKCS7(BLOCK_SIZE * 8).unpadder()
+        unpadded_data = unpadder.update(plaintext) + unpadder.finalize()
+        return unpadded_data.decode('utf-8')
+    except (ValueError, UnicodeDecodeError) as e:
+        print(f"[!] Error during unpadding or decoding: {e}")
+        print("[!] Returning raw unpadded bytes as a fallback.")
+        return str(unpadded_data)
+
+
+
