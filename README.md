@@ -1,17 +1,3 @@
-The attack decrypts a given ciphertext without knowing the encryption key, by repeatedly querying a server (the "oracle") that only reveals whether a submitted ciphertext has valid PKCS#7 padding.
-
-
-1.  Ensure you have Python 3 and the `cryptography` library installed:
-    ```bash
-    pip install cryptography
-    ```
-2.  Run the script from your terminal:
-    ```bash
-    python padding_oracle_lab.py
-    ```
-The script will print its progress as it decrypts the ciphertext block by block.
-
-
 **1. Analyze the `padding_oracle` function. How does it determine if padding is valid?**
 
 The `padding_oracle` function determines padding validity by exploiting exception handling. It works as follows:
