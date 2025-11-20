@@ -1,6 +1,5 @@
 The attack decrypts a given ciphertext without knowing the encryption key, by repeatedly querying a server (the "oracle") that only reveals whether a submitted ciphertext has valid PKCS#7 padding.
 
-## How to Run
 
 1.  Ensure you have Python 3 and the `cryptography` library installed:
     ```bash
@@ -12,7 +11,6 @@ The attack decrypts a given ciphertext without knowing the encryption key, by re
     ```
 The script will print its progress as it decrypts the ciphertext block by block.
 
-## Task 1: Answers to Questions
 
 **1. Analyze the `padding_oracle` function. How does it determine if padding is valid?**
 
