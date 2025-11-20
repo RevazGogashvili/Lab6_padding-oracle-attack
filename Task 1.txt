@@ -1,0 +1,12 @@
+Task 1: Understand the Components
+
+The function uses a try...except block. It attempts to decrypt the ciphertext and then unpad it using the PKCS#7 standard. 
+The unpadder.finalize() method from the cryptography library will raise a ValueError if the padding bytes at the end of the decrypted data are incorrect (e.g., they don't follow the ...03 03 03 pattern). 
+If this error occurs, the except block catches it and the function returns False. If no error occurs, the padding is valid, and the function returns True.
+
+The Initialization Vector (IV) is used to introduce randomness and ensure that encrypting the same plaintext multiple times produces a different ciphertext each time. 
+In CBC mode, the IV is XORed with the first plaintext block before it is encrypted. This prevents attackers from identifying patterns if the same message block appears multiple times across different messages.
+
+Block ciphers like AES operate on fixed-size blocks of data (16 bytes in this case). 
+CBC mode is designed to encrypt a sequence of these blocks. Before encryption, the plaintext is padded to ensure its total length is an even multiple of the block size. 
+Consequently, the resulting ciphertext will also be a multiple of the block size. The padding_oracle function checks this as a first step because any ciphertext not meeting this condition is inherently invalid for this mode.
