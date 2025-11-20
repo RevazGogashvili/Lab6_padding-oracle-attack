@@ -34,7 +34,52 @@ def padding_oracle(ciphertext: bytes) -> bool:
         return False
 
 def split_blocks(data: bytes, block_size: int = BLOCK_SIZE) -> list[bytes]:
-    """Split data into blocks of the specified size."""
     if len(data) % block_size != 0:
         raise ValueError(f"Data length {len(data)} is not a multiple of block size {block_size}")
     return [data[i:i + block_size] for i in range(0, len(data), block_size)]
+
+
+def decrypt_block(prev_block: bytes, target_block: bytes) -> bytes:
+
+    if len(prev_block) != BLOCK_SIZE or len(target_block) != BLOCK_SIZE:
+        raise ValueError("Blocks must be of BLOCK_SIZE")
+
+    intermediate_state = bytearray(BLOCK_SIZE)
+    decrypted_block = bytearray(BLOCK_SIZE)
+
+    for byte_index in range(BLOCK_SIZE - 1, -1, -1):
+        padding_val = BLOCK_SIZE - byte_index
+
+        forged_suffix = bytearray(padding_val - 1)
+        for i in range(len(forged_suffix)):
+            pos = byte_index + 1 + i
+            forged_suffix[i] = intermediate_state[pos] ^ padding_val
+
+        found_byte = False
+        for guess in range(256):
+            prefix_len = byte_index
+            forged_iv = (
+                    b'\x00' * prefix_len +
+                    bytes([guess]) +
+                    forged_suffix
+            )
+
+            test_ciphertext = forged_iv + target_block
+
+            if padding_oracle(test_ciphertext):
+                intermediate_state[byte_index] = guess ^ padding_val
+
+                decrypted_block[byte_index] = intermediate_state[byte_index] ^ prev_block[byte_index]
+
+                sys.stdout.write(f"\r[*] Decrypting block... Bytes found: {BLOCK_SIZE - byte_index}/{BLOCK_SIZE}")
+                sys.stdout.flush()
+
+                found_byte = True
+                break
+
+        if not found_byte:
+            raise RuntimeError(f"Could not find a valid byte at index {byte_index}")
+
+    print()
+    return bytes(decrypted_block)
+
